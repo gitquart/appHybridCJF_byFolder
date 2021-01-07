@@ -60,14 +60,12 @@ def cassandraBDProcess(json_sentencia):
                          
     return lsRes
 
-def updatePage(page):
+def executeNonQuery(query):
 
     cluster=getCluster()
     session = cluster.connect()
-    session.default_timeout=timeOut
-    page=str(page)
-    querySt="update "+keyspace+".cjf_control set page="+page+" where  id_control=1;"          
-    future = session.execute_async(querySt)
+    session.default_timeout=timeOut         
+    future = session.execute_async(query)
     future.result()
                          
     return True

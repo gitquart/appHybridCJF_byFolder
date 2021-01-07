@@ -36,47 +36,59 @@ for file in os.listdir(folder):
 
 print('Download folder empty...')
 browser=tool.returnChromeSettings()
-#chromedriver_autoinstaller.install()
-#browser=webdriver.Chrome(options=options)
+querySt="select query from test.cjf_control where id_control=4  ALLOW FILTERING"
+#1.Topic, 2. Page
+resultSet=bd.executeQuery(querySt)
+lsInfo=[] 
+if resultSet: 
+    for row in resultSet:
+        lsInfo.append(str(row[0]))
+        print('Cassandra: Star query ->',str(row[0]))
+folder=str(lsInfo[0])
+chunk=folder.split('/')
+num=int(chunk[0])
+year=chunk[1]
+for x in range(num,2000):
+    url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(2000)+"/"+year+"&tipoprocedimiento=0"
+    response= requests.get(url)
+    status= response.status_code
+    if status==200:  
+        browser.get(url)        
+        #WAit X secs until query is loaded.
+        time.sleep(5)
+        bAlert=False
+        try:
+            WebDriverWait(browser, 5).until (EC.alert_is_present())
+            alert = browser.switch_to.alert
+            alert.dismiss()
+            print('No folder found, updating number of sequential NO FOUND cases')
+            bAlert=True
+        except TimeoutException:
+            print('No alert found!') 
 
-#Since here both versions (heroku and desktop) are THE SAME
-url="https://sise.cjf.gob.mx/consultasvp/default.aspx"
-response= requests.get(url)
-status= response.status_code
-if status==200:  
-    browser.get(url)
-    try:
-        WebDriverWait(browser, 5).until (EC.alert_is_present())
-        #switch_to.alert for switching to alert and accept
-        alert = browser.switch_to.alert
-        alert.dismiss()
-        browser.refresh()
-    except TimeoutException:
-        print('No alert found!')
-        
-    time.sleep(3)  
-    #Read the information of query and page
-    querySt="select query,page from test.cjf_control where id_control=4  ALLOW FILTERING"
-    #1.Topic, 2. Page
-    resultSet=bd.executeQuery(querySt)
-    lsInfo=[]
-        
-    if resultSet: 
-        for row in resultSet:
-            lsInfo.append(str(row[0]))
-            print('Cassandra: Star query ->',str(row[0]))
-    folder=str(lsInfo[0])
-    txtBuscar= tool.devuelveElemento('//*[@id="txtNumExp"]',browser)
-    txtBuscar.send_keys(folder)
-    btnBuscar=tool.devuelveElemento('//*[@id="btnBuscar_input"]',browser)
-    btnBuscar.click()
-    #WAit X secs until query is loaded.
-    time.sleep(20)
-    print('Start reading the page...')
-    #Control the page
-    #Page identention
-    print('Currently with query:',str(folder))
-    tool.processRow(browser)
+        if not bAlert:       
+            print('Start reading the page...')
+            print('Currently with query:',str(folder))
+            tool.processRow(browser)
+            query="update test.cjf_control set page=0 where  id_control=4;" 
+            bd.executeNonQuery(query)
+        else:
+            query="select page from test.cjf_control where id_control=4  ALLOW FILTERING"
+            resultSet=bd.executeQuery(query)
+            if resultSet:
+                for row in resultSet:
+                    countNoFound=int(str(row[0]))
+                    countNoFound+=1
+                    query="update test.cjf_control set page="+str(countNoFound)+" where  id_control=4;" 
+                    bd.executeNonQuery(query)
+                    if countNoFound>=20:
+                        print('20 times NOT FOUND for year ',str(year)) 
+                        year=int(year)
+                        year+=1 
+                        query="update test.cjf_control set page=0, query='1/"+str(year)+"' where  id_control=4;" 
+                        bd.executeNonQuery(query)
+                        print('Ready to restart with new query->1/',str(year))
+                        os.sys.exit(0)  
 
      
           
