@@ -244,7 +244,10 @@ def readPyPDF(file):
     #This procedure produces a b'blabla' string, it has UTF-8
     #PDF files are stored as bytes. Therefore to read or write a PDF file you need to use rb or wb.
     lsContent=[]
-    pdfFileObj = open(download_dir+'\\'+file, 'rb')
+    if objControl.heroku:
+        pdfFileObj = open(objControl.download_dir+'/'+file, 'rb')
+    else:   
+        pdfFileObj = open(objControl.download_dir+'\\'+file, 'rb') 
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     pags=pdfReader.numPages
     for x in range(0,pags):
@@ -255,4 +258,22 @@ def readPyPDF(file):
         lsContent.append(str(bcontent.decode('utf-8')))
                          
     pdfFileObj.close()    
-    return lsContent       
+    return lsContent  
+
+def devuelveElemento(xPath, browser):
+    cEle=0
+    while (cEle==0):
+        cEle=len(browser.find_elements_by_xpath(xPath))
+        if cEle>0:
+            ele=browser.find_elements_by_xpath(xPath)[0]
+
+    return ele  
+
+def devuelveListaElementos(xPath, browser):
+    cEle=0
+    while (cEle==0):
+        cEle=len(browser.find_elements_by_xpath(xPath))
+        if cEle>0:
+            ele=browser.find_elements_by_xpath(xPath)
+
+    return ele               
