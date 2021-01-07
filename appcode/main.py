@@ -70,6 +70,7 @@ for x in range(num,2000):
             print('Start reading the page...')
             print('Currently with query:',str(folder))
             tool.processRow(browser)
+            print('Restarting sequential NO FOUND counter to Zero')
             query="update test.cjf_control set page=0 where  id_control=4;" 
             bd.executeNonQuery(query)
         else:
