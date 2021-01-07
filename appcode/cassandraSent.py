@@ -2,22 +2,32 @@ import json
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.query import SimpleStatement
+from InternalControl import cInternalControl
 import os
 
 keyspace='test'
-timeOut=1000
-cloud_config= {
-        'secure_connect_bundle': '/app/appcode/secure-connect-dbtest.zip'
-    }
+timeOut=100
+objControl=cInternalControl()
+
+def getCluster():
+    #Connect to Cassandra
+    objCC=CassandraConnection()
+    cloud_config=''
+    if objControl.heroku:
+        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest.zip'}
+    else:
+        cloud_config= {'secure_connect_bundle': 'appHybridCJF_byFolder\\appcode\\secure-connect-dbtest.zip'}
+
+
+    auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
+    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider) 
+
+    return cluster  
               
 def cassandraBDProcess(json_sentencia):
      
     sent_added=False
-
-    #Connect to Cassandra
-    objCC=CassandraConnection()
-    auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
-    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    cluster=getCluster()
     session = cluster.connect()
     session.default_timeout=timeOut
     row=''
@@ -52,10 +62,7 @@ def cassandraBDProcess(json_sentencia):
 
 def updatePage(page):
 
-    #Connect to Cassandra
-    objCC=CassandraConnection()
-    auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
-    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    cluster=getCluster()
     session = cluster.connect()
     session.default_timeout=timeOut
     page=str(page)
@@ -65,42 +72,23 @@ def updatePage(page):
                          
     return True
 
-def getPageAndTopic():
+def executeQuery(query):
 
-    #Connect to Cassandra
-    objCC=CassandraConnection()
-    auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
-    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    cluster=getCluster()
     session = cluster.connect()
     session.default_timeout=timeOut
-    row=''
-    #select page from  thesis.cjf_control where id_control=1 and query='Primer circuito'
-    querySt="select query,page from "+keyspace+".cjf_control where id_control=1  ALLOW FILTERING"
-                
-    future = session.execute_async(querySt)
-    row=future.result()
-    lsInfo=[]
-        
-    if row: 
-        for val in row:
-            lsInfo.append(str(val[0]))
-            lsInfo.append(str(val[1]))
-            print('Value from cassandra:',str(val[0]))
-            print('Value from cassandra:',str(val[1]))
-        cluster.shutdown()
-                    
-                         
-    return lsInfo
+    #select page from  thesis.cjf_control where id_control=1 and query='Primer circuito'       
+    future = session.execute_async(query)
+    resultSet=future.result()
+    cluster.shutdown()
+                                         
+    return resultSet
 
 
 def insertPDF(json_doc):
      
     record_added=False
-
-    #Connect to Cassandra
-    objCC=CassandraConnection()
-    auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
-    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    cluster=getCluster()
     session = cluster.connect()
     session.default_timeout=timeOut
     iddocumento=str(json_doc['idDocumento'])

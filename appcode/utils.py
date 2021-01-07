@@ -69,71 +69,50 @@ def processRow(browser,strSearch,row):
                 summary=summary=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
                 str(summary).replace("'"," ")
             if col==6:
-                date=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text                    
-
-    #Except: Code withoud pdf
-    #Build the json by row            
-    json_sentencia = devuelveJSON('/app/appcode/json_sentencia.json')
-    json_sentencia['id']=str(uuid.uuid4())
-    json_sentencia['filenumber']=fileNumber
-    data=''
-    data=fileNumber.split('/')
-    year=0
-    year=int(data[1])
-    json_sentencia['year']=year
-    json_sentencia['filetype']=filetype
-    json_sentencia['jurisdictionalreviewer']=juris_rev
-    # timestamp accepted for cassandra: yyyy-mm-dd 
-    #In web site, the date comes as day-month-year
-    dateStr=date.split('/') #0:day,1:month,2:year
-    dtDate=dateStr[2]+'-'+dateStr[1]+'-'+dateStr[0]
-    json_sentencia['publication_datetime']='1000-01-01'
-    json_sentencia['strpublicationdatetime']=dtDate
-    json_sentencia['subject']=subject
-    json_sentencia['summary']=str(summary).replace("'"," ")   
-
-    #Insert information to cassandra
-    lsRes=bd.cassandraBDProcess(json_sentencia)
-    if lsRes[0]:
-        print('Sentencia added:',str(fileNumber))
-    else:
-        print('Keep going...sentencia existed:',str(fileNumber))
-
-            #End Except: Code withoud pdf    
-        """
+                date=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text 
         else:
-            #This is the xpath of the link : //*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a
-            #This find_element method works!
-            link=browser.find_element(By.XPATH,'//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a')
-            link.click()
-            #Wait until the second window is open and the pdf is downloaded (or not downloaded)
-            time.sleep(20)
-            if len(browser.window_handles)>1:
-                #window_handles changes always
-                #If the pdf browser page opens, then the record should be done in Cassandra
-                main_window=browser.window_handles[0]
-                pdf_window=browser.window_handles[1]
-                browser.switch_to_window(pdf_window)
+            if objControl.enablePdf:
+                #This is the xpath of the link : //*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a
+                #This find_element method works!
+                link=browser.find_element(By.XPATH,'//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a')
+                link.click()
+                #Wait until the second window is open and the pdf is downloaded (or not downloaded)
+                time.sleep(20)
+                if len(browser.window_handles)>1:
+                    #window_handles changes always
+                    #If the pdf browser page opens, then the record should be done in Cassandra
+                    main_window=browser.window_handles[0]
+                    pdf_window=browser.window_handles[1]
+                    browser.switch_to_window(pdf_window)
 
-                #Something goes here
-
-                browser.close()
-                browser.switch_to_window(main_window)
+                    browser.close()
+                    browser.switch_to_window(main_window)
 
             else:
                 print('The pdf window was not opened',strSearch)
                 browser.quit()
-                sys.exit(0)     
-        """        
-                
-                #Here goes "Except: Code withoud pdf"
+                sys.exit(0)                                
 
-                #Check if a pdf exists  
-                                     
-                #for file in os.listdir(download_dir):
-                #    pdfDownloaded=True
-                #    processPDF(json_sentencia,lsRes)
-                #    os.remove(download_dir+'\\'+file)
+   
+
+    #Insert information to cassandra
+    lsRes=bd.cassandraBDProcess('')
+    if lsRes[0]:
+        print('Record added:',str(fileNumber))
+    else:
+        print('Record existed:',str(fileNumber))
+
+    if objControl.enablePdf:
+        folder=returnCorrectDownloadFolder(objControl.download_dir)                
+        for file in os.listdir(folder):
+            pdfDownloaded=True
+            processPDF(null,lsRes)
+            if objControl.heroku:
+                os.remove(folder+'/'+file)
+            else:
+                os.remove(folder+'\\'+file)
+
+
                     
 
 """
@@ -276,4 +255,20 @@ def devuelveListaElementos(xPath, browser):
         if cEle>0:
             ele=browser.find_elements_by_xpath(xPath)
 
-    return ele               
+    return ele      
+
+def checkDirAndCreate(folder):
+    print('Checking if download folder exists...')
+    folder=returnCorrectDownloadFolder(folder)
+    isdir = os.path.isdir(folder)
+    if isdir==False:
+        print('Creating download folder...')
+        os.mkdir(folder)  
+
+def returnCorrectDownloadFolder(folder):
+    if objControl.heroku:
+        folder='/app/'+objControl.download_dir
+    else:
+        folder='C:\\'+objControl.download_dir
+
+    return folder    
