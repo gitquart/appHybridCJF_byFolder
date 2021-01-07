@@ -16,7 +16,7 @@ def getCluster():
     if objControl.heroku:
         cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest.zip'}
     else:
-        cloud_config= {'secure_connect_bundle': 'appHybridCJF_byFolder\\appcode\\secure-connect-dbtest.zip'}
+        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest.zip'}
 
 
     auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)

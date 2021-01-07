@@ -64,7 +64,7 @@ if status==200:
     if resultSet: 
         for row in resultSet:
             lsInfo.append(str(row[0]))
-            print('Cassandra: Star query ->ñ:',str(row[0]))
+            print('Cassandra: Star query ->',str(row[0]))
     folder=str(lsInfo[0])
     txtBuscar= tool.devuelveElemento('//*[@id="txtNumExp"]',browser)
     txtBuscar.send_keys(folder)
@@ -76,23 +76,8 @@ if status==200:
     #Control the page
     #Page identention
     print('Currently with query:',str(folder))
-    for row in range(0,20):
-        tool.processRow(browser,strSearch,row)
+    tool.processRow(browser)
 
-    #Update the info in file
-    infoPage=str(browser.find_element(By.XPATH,'//*[@id="grdSentencias_ctl00"]/tfoot/tr/td/table/tbody/tr/td/div[5]').text)
-    data=infoPage.split(' ')
-    currentPage=int(data[2])
-    print('Page already done:...',str(currentPage))   
-    print('------------------------END--------------------------------------------') 
-    control_page=int(currentPage)+1
-    startPage=control_page
-    #Edit  control file
-    bd.updatePage(control_page)
-    #Change the page with next
-    btnnext=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00"]/tfoot/tr/td/table/tbody/tr/td/div[3]/input[1]')[0].click()
-    btnBuscaTema=browser.find_elements_by_xpath('//*[@id="btnBuscarPorTema_input"]')[0].click()
-    time.sleep(5)  
      
           
 

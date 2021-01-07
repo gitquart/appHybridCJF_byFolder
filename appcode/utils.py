@@ -52,66 +52,19 @@ def appendInfoToFile(path,filename,strcontent):
     txtFile.write(strcontent)
     txtFile.close()
 
-def processRow(browser,strSearch,row):
-    pdfDownloaded=False
-    for col in range(1,8):
-        if col<7:
-            if col==1:
-                juris_rev=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
-            if col==2:
-                filetype=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
-            if col==3:
-                subject=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
-            if col==4:
-                fileNumber=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
-            if col==5:
-                #I remove (') because some text got it and cassandra failed to insert it
-                summary=summary=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text
-                str(summary).replace("'"," ")
-            if col==6:
-                date=browser.find_elements_by_xpath('//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']')[0].text 
+def processRow(browser):
+    #Check if the query has results
+    valor= devuelveElemento('//*[@id="DivContentTemplate"]/table/tbody/tr[1]/td/table/tbody/tr/td[1]',browser) 
+    chunk=valor.text.split(':')  
+    if chunk[1]!='':                     
+        #Insert information to cassandra
+        lsRes=bd.cassandraBDProcess(null)
+        if lsRes[0]:
+            return True
         else:
-            if objControl.enablePdf:
-                #This is the xpath of the link : //*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a
-                #This find_element method works!
-                link=browser.find_element(By.XPATH,'//*[@id="grdSentencias_ctl00__'+str(row)+'"]/td['+str(col)+']/a')
-                link.click()
-                #Wait until the second window is open and the pdf is downloaded (or not downloaded)
-                time.sleep(20)
-                if len(browser.window_handles)>1:
-                    #window_handles changes always
-                    #If the pdf browser page opens, then the record should be done in Cassandra
-                    main_window=browser.window_handles[0]
-                    pdf_window=browser.window_handles[1]
-                    browser.switch_to_window(pdf_window)
-
-                    browser.close()
-                    browser.switch_to_window(main_window)
-
-            else:
-                print('The pdf window was not opened',strSearch)
-                browser.quit()
-                sys.exit(0)                                
+            return False
 
    
-
-    #Insert information to cassandra
-    lsRes=bd.cassandraBDProcess('')
-    if lsRes[0]:
-        print('Record added:',str(fileNumber))
-    else:
-        print('Record existed:',str(fileNumber))
-
-    if objControl.enablePdf:
-        folder=returnCorrectDownloadFolder(objControl.download_dir)                
-        for file in os.listdir(folder):
-            pdfDownloaded=True
-            processPDF(null,lsRes)
-            if objControl.heroku:
-                os.remove(folder+'/'+file)
-            else:
-                os.remove(folder+'\\'+file)
-
 
                     
 
