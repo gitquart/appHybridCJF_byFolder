@@ -68,9 +68,32 @@ def processRow(browser):
 
     lsReporte=ReadSectioAndGetList('//*[@id="pnlReporteSentencias"]',browser)
     for line in lsReporte:
-        print(line)   
+        print(line)     
 
-    print('-------------')         
+    print('-------------')    
+    lsAcuerdos=[]  
+    tablaAcuerdos=devuelveListaElementos('//*[@id="grvAcuerdos"]/tbody/tr',browser)
+    intFilas=len(tablaAcuerdos)
+    if intFilas>0:
+        for row in range(2,intFilas+1):
+            json_acuerdo=devuelveJSON(objControl.rutaLocal+'json_acuerdo.json')
+            for col in range(2,6):
+                if col==2:
+                    valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
+                    json_acuerdo['fecha_auto']=str(valor.text).replace("'",' ')
+                if col==3:
+                    valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
+                    json_acuerdo['tipo_cuaderno']=str(valor.text).replace("'",' ')
+                if col==4:
+                    valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
+                    json_acuerdo['fecha_pub']=str(valor.text).replace("'",' ')
+                if col==5:
+                    valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
+                    json_acuerdo['summary']=str(valor.text).replace("'",' ')  
+            lsAcuerdos.append(json_acuerdo)   
+        jsonReady=json.dumps(lsAcuerdos)                      
+
+
     
                  
     #Insert information to cassandra
