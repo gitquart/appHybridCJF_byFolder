@@ -53,11 +53,26 @@ def appendInfoToFile(path,filename,strcontent):
     txtFile.close()
 
 def processRow(browser):
-    divContentTem=devuelveElemento('//*[@id="pnlVista"]',browser)
-    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',divContentTem.text)
-                
+    
+    lsPanelVista=ReadSectioAndGetList('//*[@id="pnlVista"]',browser)
+    for line in lsPanelVista:
+        print(line)
 
+    print('-------------')    
+
+    lsOtros=ReadSectioAndGetList('//*[@id="panelOtros"]',browser)
+    for line in lsOtros:
+        print(line)
         
+    print('-------------')    
+
+    lsReporte=ReadSectioAndGetList('//*[@id="pnlReporteSentencias"]',browser)
+    for line in lsReporte:
+        print(line)   
+
+    print('-------------')         
+    
+                 
     #Insert information to cassandra
     lsRes=bd.cassandraBDProcess(null)
     if lsRes[0]:
@@ -65,7 +80,16 @@ def processRow(browser):
     else:
         return False
 
-   
+
+
+
+def ReadSectioAndGetList(xPath,browser):
+    pnl=devuelveElemento(xPath,browser)
+    ls=str(pnl.text).replace("'",' ').splitlines()
+
+    return ls
+
+
 
                     
 
