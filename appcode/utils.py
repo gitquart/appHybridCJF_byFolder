@@ -57,20 +57,27 @@ def processRow(browser):
     lsPanelVista=ReadSectioAndGetList('//*[@id="pnlVista"]',browser)
     for line in lsPanelVista:
         print(line)
+        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')
 
+    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Vista---'+'\n')
     print('-------------')    
 
     lsOtros=ReadSectioAndGetList('//*[@id="panelOtros"]',browser)
     for line in lsOtros:
         print(line)
+        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')
         
-    print('-------------')    
+    print('-------------')
+    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Otros----'+'\n')    
 
     lsReporte=ReadSectioAndGetList('//*[@id="pnlReporteSentencias"]',browser)
     for line in lsReporte:
-        print(line)     
+        print(line)   
+        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')  
 
-    print('-------------')    
+    print('-------------')
+    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Reporte----'+'\n')
+
     lsAcuerdos=[]  
     tablaAcuerdos=devuelveListaElementos('//*[@id="grvAcuerdos"]/tbody/tr',browser)
     intFilas=len(tablaAcuerdos)
@@ -91,7 +98,8 @@ def processRow(browser):
                     valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
                     json_acuerdo['summary']=str(valor.text).replace("'",' ')  
             lsAcuerdos.append(json_acuerdo)   
-        jsonReady=json.dumps(lsAcuerdos)                      
+        jsonReady=json.dumps(lsAcuerdos) 
+        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',jsonReady)                     
 
 
     
