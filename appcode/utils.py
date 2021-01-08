@@ -53,14 +53,11 @@ def appendInfoToFile(path,filename,strcontent):
     txtFile.close()
 
 def processRow(browser):
-    
     divContentTem=devuelveElemento('//*[@id="pnlVista"]',browser)
-    for table in divContentTem.find_elements_by_xpath('//table/tbody'):
-        for row in table.find_elements_by_xpath('//tr'):
-            for data in row.find_elements_by_xpath('//td'):
-                print(data.text)
+    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',divContentTem.text)
+                
 
-
+        
     #Insert information to cassandra
     lsRes=bd.cassandraBDProcess(null)
     if lsRes[0]:
