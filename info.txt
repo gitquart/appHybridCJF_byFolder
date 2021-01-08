@@ -1,0 +1,26 @@
+MX tiene 
+a: patente
+u:modelo de utilidad
+f: diseño industrial
+
+Ejemplo de url: MX/a/{año}/{expediente}
+
+Heroku settings:
+
+Don't you waste time on this baby, add this:
+
+Config vars
+
+CHROMEDRIVER_PATH   /app/.chromedriver/bin/chromedriver
+GOOGLE_CHROME_BIN   /app/.apt/usr/bin/google-chrome
+
+Build packs
+
+heroku/python
+https://github.com/heroku/heroku-buildpack-google-chrome
+https://github.com/heroku/heroku-buildpack-chromedriver
+
+This code is donde to work simultaneously in heroku, please change the following for each app:
+1)Rename appimpi{year} folder
+2)procfile: change year to match 1)
+3) internalControl.py change settings
