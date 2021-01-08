@@ -49,7 +49,7 @@ chunk=folder.split('/')
 num=int(chunk[0])
 year=chunk[1]
 for x in range(num,2000):
-    url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(2000)+"/"+year+"&tipoprocedimiento=0"
+    url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(num)+"/"+year+"&tipoprocedimiento=0"
     response= requests.get(url)
     status= response.status_code
     if status==200:  

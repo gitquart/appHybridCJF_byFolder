@@ -53,16 +53,20 @@ def appendInfoToFile(path,filename,strcontent):
     txtFile.close()
 
 def processRow(browser):
-    #Check if the query has results
-    valor= devuelveElemento('//*[@id="DivContentTemplate"]/table/tbody/tr[1]/td/table/tbody/tr/td[1]',browser) 
-    chunk=valor.text.split(':')  
-    if chunk[1]!='':                     
-        #Insert information to cassandra
-        lsRes=bd.cassandraBDProcess(null)
-        if lsRes[0]:
-            return True
-        else:
-            return False
+    
+    divContentTem=devuelveElemento('//*[@id="pnlVista"]',browser)
+    for table in divContentTem.find_elements_by_xpath('//table/tbody'):
+        for row in table.find_elements_by_xpath('//tr'):
+            for data in row.find_elements_by_xpath('//td'):
+                print(data.text)
+
+
+    #Insert information to cassandra
+    lsRes=bd.cassandraBDProcess(null)
+    if lsRes[0]:
+        return True
+    else:
+        return False
 
    
 
