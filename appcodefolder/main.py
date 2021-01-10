@@ -43,8 +43,13 @@ lsInfo=[]
 if resultSet: 
     for row in resultSet:
         lsInfo.append(str(row[0]))
-        print('Cassandra: Star query ->',str(row[0]))
+        print('Start query ->',str(row[0]))
 folder=str(lsInfo[0])
+print('Checking the limit...')
+if folder=='1/2022':
+    print('The query is finished, please change it...')
+    os.sys.exit(0)
+
 chunk=folder.split('/')
 num=int(chunk[0])
 year=chunk[1]
@@ -53,7 +58,7 @@ for x in range(num,2000):
     response= requests.get(url)
     status= response.status_code
     if status==200:  
-        browser.get(url)        
+        browser.get(url)       
         #WAit X secs until query is loaded.
         time.sleep(5)
         bAlert=False

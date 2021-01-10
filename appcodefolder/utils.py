@@ -53,31 +53,30 @@ def appendInfoToFile(path,filename,strcontent):
     txtFile.close()
 
 def processRow(browser):
+
+    if objControl.heroku:        
+        json_doc=devuelveJSON('/app/'+objControl.hfolder+'/json_documento.json')
+    else:
+        json_doc=devuelveJSON(objControl.rutaLocal+'/json_documento.json')
+
+    neun=devuelveElemento('//*[@id="lblNEUN"]',browser)
     
+    #Section A
     lsPanelVista=ReadSectioAndGetList('//*[@id="pnlVista"]',browser)
     for line in lsPanelVista:
-        print(line)
-        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')
-
-    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Vista---'+'\n')
-    print('-------------')    
-
+        json_doc['sectionA'].append(line)
+        
+    #Section B    
     lsOtros=ReadSectioAndGetList('//*[@id="panelOtros"]',browser)
     for line in lsOtros:
-        print(line)
-        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')
-        
-    print('-------------')
-    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Otros----'+'\n')    
-
+        json_doc['sectionB'].append(line)
+          
+    #Section C
     lsReporte=ReadSectioAndGetList('//*[@id="pnlReporteSentencias"]',browser)
     for line in lsReporte:
-        print(line)   
-        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',line+'\n')  
+        json_doc['sectionC'].append(line) 
 
-    print('-------------')
-    appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt','-----Pnl Reporte----'+'\n')
-
+    #JSON Acuerdos
     lsAcuerdos=[]  
     tablaAcuerdos=devuelveListaElementos('//*[@id="grvAcuerdos"]/tbody/tr',browser)
     intFilas=len(tablaAcuerdos)
@@ -98,18 +97,24 @@ def processRow(browser):
                     valor=devuelveElemento('//*[@id="grvAcuerdos"]/tbody/tr['+str(row)+']/td['+str(col)+']',browser)
                     json_acuerdo['summary']=str(valor.text).replace("'",' ')  
             lsAcuerdos.append(json_acuerdo)   
-        jsonReady=json.dumps(lsAcuerdos) 
-        appendInfoToFile('C:\\Users\\1098350515\\Documents\\','ejemplo.txt',jsonReady)                     
+        jsonReady=json.dumps(lsAcuerdos)                     
 
 
     
-                 
-    #Insert information to cassandra
-    lsRes=bd.cassandraBDProcess(null)
-    if lsRes[0]:
-        return True
+    #Build the json by row   
+    json_doc['id']=str(uuid.uuid4())
+    json_doc['neun']=neun.text
+    json_doc['jsonAcuerdos']=jsonReady
+    query="select id where test.tbcourtdecisioncjf_byfolder where neun='"+str(json_doc['neun'])+"' ALLOW FILTERING "
+    resultSet=bd.executeQuery(query)
+    if resultSet:
+        pass
     else:
-        return False
+        res=bd.insertJSON(json_doc)
+        if res:
+            return True
+        else:
+            return False
 
 
 

@@ -24,41 +24,20 @@ def getCluster():
 
     return cluster  
               
-def cassandraBDProcess(json_sentencia):
+def insertJSON(json_file):
      
-    sent_added=False
     cluster=getCluster()
     session = cluster.connect()
     session.default_timeout=timeOut
-    row=''
-    fileNumber=json_sentencia['filenumber']
-    #Check wheter or not the record exists, check by numberFile and date
-    #Date in cassandra 2020-09-10T00:00:00.000+0000
-    querySt="select id from "+keyspace+".tbcourtdecisioncjf where filenumber='"+str(fileNumber)+"'  ALLOW FILTERING"            
-    future = session.execute_async(querySt)
-    row=future.result()
-    lsRes=[]
-        
-    if row: 
-        sent_added=False
-        valid=''
-        for val in row:
-            valid=str(val[0])
-        lsRes.append(sent_added) 
-        lsRes.append(valid)   
-        cluster.shutdown()
-    else:        
-        #Insert Data as JSON
-        jsonS=json.dumps(json_sentencia)           
-        insertSt="INSERT INTO "+keyspace+".tbcourtdecisioncjf JSON '"+jsonS+"';" 
-        future = session.execute_async(insertSt)
-        future.result()  
-        sent_added=True
-        lsRes.append(sent_added)
-        cluster.shutdown()     
+    #Insert Data as JSON
+    jsonS=json.dumps(json_file)           
+    insertSt="INSERT INTO "+keyspace+".tbcourtdecisioncjf_byfolder JSON '"+jsonS+"';" 
+    future = session.execute_async(insertSt)
+    future.result()  
+    cluster.shutdown()     
                     
                          
-    return lsRes
+    return True
 
 def executeNonQuery(query):
 
@@ -74,8 +53,7 @@ def executeQuery(query):
 
     cluster=getCluster()
     session = cluster.connect()
-    session.default_timeout=timeOut
-    #select page from  thesis.cjf_control where id_control=1 and query='Primer circuito'       
+    session.default_timeout=timeOut      
     future = session.execute_async(query)
     resultSet=future.result()
     cluster.shutdown()
