@@ -5,6 +5,8 @@ f: diseño industrial
 
 Ejemplo de url: MX/a/{año}/{expediente}
 
+Agrego campo a json "print": 1 para poder imprimir los registros
+
 Heroku settings:
 
 Don't you waste time on this baby, add this:
