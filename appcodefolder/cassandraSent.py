@@ -61,32 +61,7 @@ def executeQuery(query):
     return resultSet
 
 
-def insertPDF(json_doc):
-     
-    record_added=False
-    cluster=getCluster()
-    session = cluster.connect()
-    session.default_timeout=timeOut
-    iddocumento=str(json_doc['idDocumento'])
-    documento=str(json_doc['documento'])
-    fuente=str(json_doc['fuente'])
-    secuencia=str(json_doc['secuencia'])
-    querySt="select id from "+keyspace+".tbDocumento_cjf where iddocumento="+iddocumento+" and documento='"+documento+"' and fuente='"+fuente+"' AND secuencia="+secuencia+"  ALLOW FILTERING"          
-    future = session.execute_async(querySt)
-    row=future.result()
-
-    if row:
-        cluster.shutdown()
-    else:    
-        jsonS=json.dumps(json_doc)           
-        insertSt="INSERT INTO "+keyspace+".tbDocumento_cjf JSON '"+jsonS+"';" 
-        future = session.execute_async(insertSt)
-        future.result()  
-        record_added=True
-        cluster.shutdown()     
-                    
-                         
-    return record_added     
+   
 
    
 class CassandraConnection():

@@ -105,7 +105,7 @@ def processRow(browser):
     json_doc['id']=str(uuid.uuid4())
     json_doc['neun']=neun.text
     json_doc['jsonAcuerdos']=jsonReady
-    query="select id where test.tbcourtdecisioncjf_byfolder where neun='"+str(json_doc['neun'])+"' ALLOW FILTERING "
+    query="select id from test.tbcourtdecisioncjf_byfolder where neun='"+str(json_doc['neun'])+"' ALLOW FILTERING "
     resultSet=bd.executeQuery(query)
     if resultSet:
         pass
