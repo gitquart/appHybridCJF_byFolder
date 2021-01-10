@@ -78,6 +78,8 @@ for x in range(num,2000):
             print('Restarting sequential NO FOUND counter to Zero')
             query="update test.cjf_control set page=0 where  id_control=4;" 
             bd.executeNonQuery(query)
+            print('Adding 7 seconds to slow down cassandra')
+            time.sleep(7)
         else:
             query="select page from test.cjf_control where id_control=4  ALLOW FILTERING"
             resultSet=bd.executeQuery(query)
