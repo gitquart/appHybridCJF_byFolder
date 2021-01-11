@@ -25,7 +25,6 @@ objControl=cInternalControl()
 
 #Erase every file in download folder at the beginning to avoid mixed files
 tool.checkDirAndCreate(objControl.download_dir)
-print('Download directory created...')
 folder=tool.returnCorrectDownloadFolder(objControl.download_dir)
 for file in os.listdir(folder):
     if objControl.heroku:

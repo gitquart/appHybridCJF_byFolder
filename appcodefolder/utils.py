@@ -277,7 +277,9 @@ def checkDirAndCreate(folder):
     isdir = os.path.isdir(folder)
     if isdir==False:
         print('Creating download folder...')
-        os.mkdir(folder)  
+        os.mkdir(folder) 
+    print('Download directory created...')    
+
 
 def returnCorrectDownloadFolder(folder):
     if objControl.heroku:
