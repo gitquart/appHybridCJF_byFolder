@@ -54,6 +54,7 @@ num=int(chunk[0])
 year=chunk[1]
 for x in range(num,2000):
     currentQuery=num+'/'+year
+    print('Updating current query:',currentQuery)
     query='update test.cjf_control set query="'+str(currentQuery)+'" where  id_control=4;'
     url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(num)+"/"+year+"&tipoprocedimiento=0"
     response= requests.get(url)
