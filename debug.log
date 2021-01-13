@@ -3,3 +3,4 @@
 [0112/173241.700:ERROR:exception_snapshot_win.cc(99)] thread ID 18740 not found in process
 [0112/173241.708:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
 [0112/173241.709:ERROR:exception_snapshot_win.cc(99)] thread ID 16636 not found in process
+[0112/174748.549:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
