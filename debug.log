@@ -4,3 +4,9 @@
 [0112/173241.708:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
 [0112/173241.709:ERROR:exception_snapshot_win.cc(99)] thread ID 16636 not found in process
 [0112/174748.549:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0112/180605.138:ERROR:process_reader_win.cc(151)] SuspendThread: Acceso denegado. (0x5)
+[0112/180605.139:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0112/180605.139:ERROR:exception_snapshot_win.cc(99)] thread ID 11900 not found in process
+[0112/180605.140:ERROR:process_reader_win.cc(151)] SuspendThread: Acceso denegado. (0x5)
+[0112/180605.140:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0112/180605.140:ERROR:exception_snapshot_win.cc(99)] thread ID 15684 not found in process
