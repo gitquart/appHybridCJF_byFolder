@@ -22,6 +22,7 @@ from InternalControl import cInternalControl
 pathToHere=os.getcwd()
 print('Current path:',pathToHere)
 objControl=cInternalControl()
+id_control=objControl.id_control
 
 #Erase every file in download folder at the beginning to avoid mixed files
 tool.checkDirAndCreate(objControl.download_dir)
@@ -35,7 +36,7 @@ for file in os.listdir(folder):
 
 print('Download folder empty...')
 browser=tool.returnChromeSettings()
-querySt="select query from test.cjf_control where id_control=4  ALLOW FILTERING"
+querySt="select query from test.cjf_control where id_control="+str(id_control)+"  ALLOW FILTERING"
 #1.Topic, 2. Page
 resultSet=bd.executeQuery(querySt)
 lsInfo=[] 
@@ -55,7 +56,7 @@ year=chunk[1]
 for x in range(num,2000):
     currentQuery=str(x)+'/'+str(year)
     print('Updating current query:',currentQuery)
-    query="update test.cjf_control set query='"+str(currentQuery)+"' where  id_control=4;"
+    query="update test.cjf_control set query='"+str(currentQuery)+"' where  id_control="+str(id_control)+";"
     bd.executeNonQuery(query)
     url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(x)+"/"+year+"&tipoprocedimiento=0"
     response= requests.get(url)
@@ -79,24 +80,24 @@ for x in range(num,2000):
             print('Currently with query:',str(folder))
             tool.processRow(browser)
             print('Restarting sequential NO FOUND counter to Zero')
-            query="update test.cjf_control set page=0 where  id_control=4;" 
+            query="update test.cjf_control set page=0 where id_control="+str(id_control)+";" 
             bd.executeNonQuery(query)
             print('Adding 7 seconds to slow down cassandra')
             time.sleep(7)
         else:
-            query="select page from test.cjf_control where id_control=4  ALLOW FILTERING"
+            query="select page from test.cjf_control where id_control="+str(id_control)+"  ALLOW FILTERING"
             resultSet=bd.executeQuery(query)
             if resultSet:
                 for row in resultSet:
                     countNoFound=int(str(row[0]))
                     countNoFound+=1
-                    query="update test.cjf_control set page="+str(countNoFound)+" where  id_control=4;" 
+                    query="update test.cjf_control set page="+str(countNoFound)+" where  id_control="+str(id_control)+";" 
                     bd.executeNonQuery(query)
                     if countNoFound>=20:
                         print('20 times NOT FOUND for year ',str(year)) 
                         year=int(year)
                         year+=1 
-                        query="update test.cjf_control set page=0, query='1/"+str(year)+"' where  id_control=4;" 
+                        query="update test.cjf_control set page=0, query='1/"+str(year)+"' where  id_control="+str(id_control)+";" 
                         bd.executeNonQuery(query)
                         print('Ready to restart with new query->1/',str(year))
                         os.sys.exit(0)  

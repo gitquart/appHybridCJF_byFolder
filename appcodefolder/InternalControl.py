@@ -1,6 +1,7 @@
 import os
 
 class cInternalControl:
+    id_control=4
     timeout=70
     hfolder='appcodefolder' 
     heroku=False
