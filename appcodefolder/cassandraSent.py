@@ -14,9 +14,9 @@ def getCluster():
     objCC=CassandraConnection()
     cloud_config=''
     if objControl.heroku:
-        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest.zip'}
+        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest_serverless.zip'}
     else:
-        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest.zip'}
+        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest_serverless.zip'}
 
 
     auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
@@ -68,7 +68,7 @@ class CassandraConnection():
     cc_user='quartadmin'
     cc_keyspace='thesis'
     cc_pwd='P@ssw0rd33'
-    cc_user_test='test'
-    cc_pwd_test='testquart'
+    cc_user_test='nrubZeQtTRZJzLDZTfBOtagT'
+    cc_pwd_test='MCMFQcUiku2TBcT5uDATCJ+dm77Z.vG0T4p,uc_B0OmzcChuDL7,yjkaNWX_M5cC2GkPN2kCZAmssBrZoaU-39a4RJFo84TS-kIJmRb0Y6uOHSA.y84JDRZKSWN2j_JW'
         
 
