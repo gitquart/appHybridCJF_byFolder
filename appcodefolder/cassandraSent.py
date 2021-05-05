@@ -68,7 +68,7 @@ class CassandraConnection():
     cc_user='quartadmin'
     cc_keyspace='thesis'
     cc_pwd='P@ssw0rd33'
-    cc_user_test='nrubZeQtTRZJzLDZTfBOtagT'
-    cc_pwd_test='MCMFQcUiku2TBcT5uDATCJ+dm77Z.vG0T4p,uc_B0OmzcChuDL7,yjkaNWX_M5cC2GkPN2kCZAmssBrZoaU-39a4RJFo84TS-kIJmRb0Y6uOHSA.y84JDRZKSWN2j_JW'
+    cc_user_test='MpvtYRWPigKTDLxfcZMNIfYQ'
+    cc_pwd_test='joFIPwAoFL_JWNsgAr,xTNf30gZpZu3Fg6,eMxQjKxm-Gz5Uva2R.ELwwzj88f4XPePGhXLWU89xzzP8a1BdgSpwLN+iPHhQpjRmXnvA-cbmvoK_In8Sr,MGadqF+TAh'
         
 
