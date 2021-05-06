@@ -14,9 +14,18 @@ def getCluster():
     objCC=CassandraConnection()
     cloud_config=''
     if objControl.heroku:
-        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest_serverless.zip'}
+        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest_serverless.zip',
+        'init-query-timeout': 10,
+        'connect_timeout': 10,
+        'set-keyspace-timeout': 10
+        }
     else:
-        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest_serverless.zip'}
+        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest_serverless.zip',
+        'init-query-timeout': 10,
+        'connect_timeout': 10,
+        'set-keyspace-timeout': 10
+        
+        }
 
 
     auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
