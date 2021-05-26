@@ -12,21 +12,16 @@ objControl=cInternalControl()
 def getCluster():
     #Connect to Cassandra
     objCC=CassandraConnection()
+    cloud_config={}
     cloud_config=''
     if objControl.heroku:
-        cloud_config= {'secure_connect_bundle': objControl.rutaHeroku+'/secure-connect-dbtest_serverless.zip',
-        'init-query-timeout': 10,
-        'connect_timeout': 10,
-        'set-keyspace-timeout': 10
-        }
+        cloud_config['secure_connect_bundle']= objControl.rutaHeroku+'/secure-connect-dbtest_serverless.zip'
     else:
-        cloud_config= {'secure_connect_bundle': objControl.rutaLocal+'secure-connect-dbtest_serverless.zip',
-        'init-query-timeout': 10,
-        'connect_timeout': 10,
-        'set-keyspace-timeout': 10
+        cloud_config['secure_connect_bundle']= objControl.rutaLocal+'secure-connect-dbtest_serverless.zip'
         
-        }
-
+    cloud_config['init-query-timeout']=10
+    cloud_config['connect_timeout']=10
+    cloud_config['set-keyspace-timeout']=10
 
     auth_provider = PlainTextAuthProvider(objCC.cc_user_test,objCC.cc_pwd_test)
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider) 
