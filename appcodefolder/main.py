@@ -53,7 +53,7 @@ if folder=='1/2022':
 chunk=folder.split('/')
 num=int(chunk[0])
 year=chunk[1]
-for x in range(num,2000):
+for x in range(num,1000000):
     currentQuery=str(x)+'/'+str(year)
     print('Updating current query:',currentQuery)
     query="update test.cjf_control set query='"+str(currentQuery)+"' where  id_control="+str(id_control)+";"
