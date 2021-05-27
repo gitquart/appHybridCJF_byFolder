@@ -57,7 +57,7 @@ limit=1000000
 print('The current limit set is:',str(limit))
 for x in range(num,limit):
     currentQuery=str(x)+'/'+str(year)
-    print('Updating current query:',currentQuery)
+    print('--------Current query:',currentQuery+' ------------')
     query="update test.cjf_control set query='"+str(currentQuery)+"' where  id_control="+str(id_control)+";"
     bd.executeNonQuery(query)
     url=" https://www.dgepj.cjf.gob.mx/siseinternet/Reportes/VerCaptura.aspx?tipoasunto=1&organismo=10&expediente="+str(x)+"/"+year+"&tipoprocedimiento=0"
@@ -79,7 +79,6 @@ for x in range(num,limit):
 
         if not bAlert:       
             print('Start reading the page...')
-            print('Currently with query:',str(folder))
             tool.processRow(browser)
             print('Restarting sequential NO FOUND counter to Zero')
             query="update test.cjf_control set page=0 where id_control="+str(id_control)+";" 
